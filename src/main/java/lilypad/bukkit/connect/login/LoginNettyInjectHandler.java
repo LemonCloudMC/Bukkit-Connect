@@ -176,6 +176,11 @@ public class LoginNettyInjectHandler implements NettyInjectHandler {
 				if (this.connectPlugin.getServer().getPluginManager().getPlugin("ProtocolSupport") == null) {
 					throw exception;
 				}
+				if (LoginListenerProxy.getPacketListenerField() == null) {
+					context.close();
+					return;
+				}
+				Object packetListener = LoginListenerProxy.getPacketListenerField().get(networkManager);
 				GameProfile profile = ReflectionUtils.getPrivateField(object.getClass(), object, GameProfile.class, "a");
 				LoginPayload payload = payloadCache.getByName(profile.getName());
 				LoginPayload.Property[] payloadProperties = payload.getProperties();
@@ -187,9 +192,15 @@ public class LoginNettyInjectHandler implements NettyInjectHandler {
 				}
 				ReflectionUtils.setFinalField(networkManager.getClass(), networkManager, "spoofedUUID", payload.getUUID());
 				ReflectionUtils.setFinalField(networkManager.getClass(), networkManager, "spoofedProfile", properties);
+				try {
+					ReflectionUtils.setFinalField(packetListener.getClass().getSuperclass().getSuperclass(), packetListener, "isOnlineMode", false);
+				} catch(NoSuchFieldException exception1) {
+					ReflectionUtils.setFinalField(packetListener.getClass().getSuperclass(), packetListener, "isOnlineMode", false);
+				}
 			}
-		} catch (Exception exception) {
-			exception.printStackTrace();
+		} catch (Exception exception2) {
+			exception2.printStackTrace();
+			context.close();
 		}
 	}
 

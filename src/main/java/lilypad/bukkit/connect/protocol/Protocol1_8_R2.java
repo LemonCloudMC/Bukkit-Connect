@@ -18,6 +18,11 @@ public class Protocol1_8_R2 implements IProtocol {
 	}
 
 	@Override
+	public boolean isOfflineBlankConstructor() {
+		return true;
+	}
+
+	@Override
 	public String getPacketInjectorProtocolDirections() {
 		return "j";
 	}
@@ -30,21 +35,6 @@ public class Protocol1_8_R2 implements IProtocol {
 	@Override
 	public String getPacketInjectorHandleCtMethod() {
 		return "a";
-	}
-
-	@Override
-	public String getLoginListenerGameProfile() {
-		return "bH";
-	}
-
-	@Override
-	public String getLoginListenerCacheProfile() {
-		return "a";
-	}
-
-	@Override
-	public String getLoginListenerPropertyConstructor() {
-		return "com.mojang.authlib.properties.Property";
 	}
 
 	@Override

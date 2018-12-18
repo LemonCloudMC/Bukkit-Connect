@@ -6,12 +6,10 @@ public interface IProtocol {
 	
 	String getNettyInjectorChannelFutureList();
 	String getOfflineInjectorServerConnection();
+	boolean isOfflineBlankConstructor();
 	String getPacketInjectorProtocolDirections();
 	String getPacketInjectorDecodeCtMethod();
 	String getPacketInjectorHandleCtMethod();
-	String getLoginListenerGameProfile();
-	String getLoginListenerCacheProfile();
-	String getLoginListenerPropertyConstructor();
 	String getLoginNettyInjectHandlerNetworkManager();
 	
 }

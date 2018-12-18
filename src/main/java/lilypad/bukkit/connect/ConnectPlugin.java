@@ -4,16 +4,10 @@ import lilypad.bukkit.connect.hooks.SpigotHook;
 import lilypad.bukkit.connect.injector.HandlerListInjector;
 import lilypad.bukkit.connect.injector.NettyInjector;
 import lilypad.bukkit.connect.injector.OfflineInjector;
-import lilypad.bukkit.connect.injector.PacketInjector;
 import lilypad.bukkit.connect.login.LoginListener;
 import lilypad.bukkit.connect.login.LoginNettyInjectHandler;
 import lilypad.bukkit.connect.login.LoginPayloadCache;
-import lilypad.bukkit.connect.protocol.IProtocol;
-import lilypad.bukkit.connect.protocol.Protocol1_10_R1;
-import lilypad.bukkit.connect.protocol.Protocol1_8_R1;
-import lilypad.bukkit.connect.protocol.Protocol1_8_R2;
-import lilypad.bukkit.connect.protocol.Protocol1_9_R1;
-import lilypad.bukkit.connect.protocol.Protocol1_9_R2;
+import lilypad.bukkit.connect.protocol.*;
 import lilypad.bukkit.connect.util.ReflectionUtils;
 import lilypad.client.connect.api.Connect;
 import lilypad.client.connect.lib.ConnectImpl;
@@ -62,6 +56,12 @@ public class ConnectPlugin extends JavaPlugin {
 		case "v1_10_R1":
 			protocol = new Protocol1_10_R1();
 			break;
+		case "v1_11_R1":
+			protocol = new Protocol1_11_R1();
+			break;
+		case "v1_12_R1":
+			protocol = new Protocol1_12_R1();
+			break;
 		default:
 			System.out.println("[Connect] Unable to start plugin - unsupported version (" + version + "). Please retrieve the newest version at http://lilypadmc.org");
 			return;
@@ -69,9 +69,10 @@ public class ConnectPlugin extends JavaPlugin {
 
 		try {
 			// Modify handshake packet max string size
-			if (!protocol.getGeneralVersion().equals("1.10")) {
+			// -- as of 1.8 I do not believe this is necessary anymore
+			/*if (!protocol.getGeneralVersion().equals("1.10")) {
 				PacketInjector.injectStringMaxSize(super.getServer(), "handshaking", 0x00, 65535);
-			}
+			}*/
 			// Handle LilyPad handshake packet
 			commonPort = NettyInjector.injectAndFindPort(super.getServer(), new LoginNettyInjectHandler(this, payloadCache));
 			// If we are in online-mode
@@ -116,15 +117,17 @@ public class ConnectPlugin extends JavaPlugin {
 			if (this.connectThread != null) {
 				this.connectThread.stop();
 			}
-			if (this.connect != null) {
-				this.connect.close();
+			if (!super.getConfig().getBoolean("shutdown-lazy", false)) {
+				if (this.connect != null) {
+					this.connect.close();
+				}
 			}
 		} catch(Exception exception) {
 			exception.printStackTrace();
 		} finally {
 			this.connect = null;
 			this.connectThread = null;
-			protocol = null;
+			ConnectPlugin.protocol = null;
 		}
 	}
 
