@@ -18,10 +18,6 @@
   
   <repositories>
     <repository>
-      <id>lilypad</id>
-      <url>http://ci.lilypadmc.org/plugin/repository/everything</url>
-    </repository>
-    <repository>
       <id>spigotmc</id>
       <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
     </repository>
@@ -35,6 +31,7 @@
   </repositories>
   
   <dependencies>
+    <!-- compile the JLilyPad Repo -->
     <dependency>
       <groupId>lilypad.client.connect</groupId>
       <artifactId>lib</artifactId>
@@ -46,6 +43,7 @@
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
       <version>2.2.4</version>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.spigotmc</groupId>
@@ -81,7 +79,6 @@
               <goal>shade</goal>
             </goals>
             <configuration>
-              <appendAssemblyId>false</appendAssemblyId>
               <filters>
               	<filter>
               		<artifact>*:*</artifact>
